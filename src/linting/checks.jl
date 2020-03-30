@@ -112,7 +112,7 @@ function func_nargs(x::EXPR)
     return minargs, maxargs, kws, kwsplat
 end
 
-function func_nargs(m::SymbolServer.MethodStore)
+function func_nargs(m::SymbolServer.MethStore)
     minargs, maxargs, kws, kwsplat = 0, 0, String[], false
     for a in m.args
         if last(a) == ".KW"
@@ -251,7 +251,7 @@ function check_loop_iter(x::EXPR, server)
             rng = x.args[2].args[3]
             if typof(rng) === CSTParser.LITERAL && kindof(rng) == CSTParser.Tokens.FLOAT || kindof(rng) == CSTParser.Tokens.INTEGER
                 seterror!(x.args[2], IncorrectIterSpec)
-            elseif typof(rng) === CSTParser.Call && refof(rng.args[1]) === getsymbolserver(server)["Base"].vals["length"]
+            elseif typof(rng) === CSTParser.Call && refof(rng.args[1]) === getsymbolserver(server)[:Base][:length]
                 seterror!(x.args[2], IncorrectIterSpec)
             end
         end
@@ -261,7 +261,7 @@ function check_loop_iter(x::EXPR, server)
                 rng = x.args[i].args[3]
                 if typof(rng) === CSTParser.LITERAL && kindof(rng) == CSTParser.Tokens.FLOAT || kindof(rng) == CSTParser.Tokens.INTEGER
                     seterror!(x.args[i], IncorrectIterSpec)
-                elseif typof(rng) === CSTParser.Call && valof(rng.args[1]) == "length" && refof(rng.args[1]) === getsymbolserver(server)["Base"].vals["length"]
+                elseif typof(rng) === CSTParser.Call && valof(rng.args[1]) == "length" && refof(rng.args[1]) === getsymbolserver(server)[:Base][:length]
                     seterror!(x.args[i], IncorrectIterSpec)
                 end
             end
@@ -271,9 +271,9 @@ end
 
 function check_nothing_equality(x::EXPR, server)
     if typof(x) === CSTParser.BinaryOpCall
-        if kindof(x.args[2]) === CSTParser.Tokens.EQEQ && valof(x.args[3]) == "nothing" && refof(x.args[3]) === getsymbolserver(server)["Core"].vals["nothing"]
+        if kindof(x.args[2]) === CSTParser.Tokens.EQEQ && valof(x.args[3]) == "nothing" && refof(x.args[3]) === getsymbolserver(server)[:Core][:nothing]
             seterror!(x.args[2], NothingEquality)
-        elseif kindof(x.args[2]) === CSTParser.Tokens.NOT_EQ && valof(x.args[3]) == "nothing" && refof(x.args[3]) === getsymbolserver(server)["Core"].vals["nothing"]
+        elseif kindof(x.args[2]) === CSTParser.Tokens.NOT_EQ && valof(x.args[3]) == "nothing" && refof(x.args[3]) === getsymbolserver(server)[:Core][:nothing]
             seterror!(x.args[2], NothingNotEq)
         end
     end

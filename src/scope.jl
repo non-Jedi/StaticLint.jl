@@ -76,11 +76,11 @@ function scopes(x::EXPR, state)
         state.scope = scopeof(x)
         if typof(x) === ModuleH # Add default modules to a new module
             state.scope.modules = Dict{String,Any}()
-            state.scope.modules["Base"] = getsymbolserver(state.server)["Base"]
-            state.scope.modules["Core"] = getsymbolserver(state.server)["Core"]
+            state.scope.modules["Base"] = getsymbolserver(state.server)[:Base]
+            state.scope.modules["Core"] = getsymbolserver(state.server)[:Core]
         elseif typof(x) === BareModule
             state.scope.modules = Dict{String,Any}()
-            state.scope.modules["Core"] = getsymbolserver(state.server)["Core"]
+            state.scope.modules["Core"] = getsymbolserver(state.server)[:Core]
         end
         if (typof(x) === CSTParser.ModuleH || typof(x) === CSTParser.BareModule) && bindingof(x) !== nothing # Add reference to out of scope binding (i.e. itself)
             # state.scope.names[bindingof(x).name] = bindingof(x)
@@ -89,5 +89,5 @@ function scopes(x::EXPR, state)
             setscope!(x.args[1].args[1], nothing)
         end
     end
-    return s0    
+    return s0
 end

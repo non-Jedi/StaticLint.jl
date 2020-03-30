@@ -55,10 +55,10 @@ function _mark_import_arg(arg, par, state, u)
         if par isa Binding # mark reference to binding
             push!(par.refs, arg)
         end
-        if par isa SymbolServer.PackageRef
+        if par isa SymbolServer.VarRef
             par = SymbolServer._lookup(par, getsymbolserver(state.server))
-            par isa SymbolServer.PackageRef && (par = SymbolServer._lookup(par, getsymbolserver(state.server)))
-            par isa SymbolServer.PackageRef && (par = SymbolServer._lookup(par, getsymbolserver(state.server)))
+            par isa SymbolServer.VarRef && (par = SymbolServer._lookup(par, getsymbolserver(state.server)))
+            par isa SymbolServer.VarRef && (par = SymbolServer._lookup(par, getsymbolserver(state.server)))
             !(par isa SymbolServer.SymStore) && return
         end
         if bindingof(arg) === nothing
@@ -98,7 +98,7 @@ end
 
 
 function _get_field(par, arg, state)
-    if par isa Dict{String,SymbolServer.ModuleStore} # package store
+    if par isa SymbolServer.EnvStore # package store
         if haskey(par, CSTParser.str_value(arg))
             return par[CSTParser.str_value(arg)]
         end
@@ -117,7 +117,7 @@ function _get_field(par, arg, state)
         elseif par.val isa SymbolServer.ModuleStore
             if haskey(par.val.vals, CSTParser.str_value(arg))
                 par = par.val.vals[CSTParser.str_value(arg)]
-                if par isa SymbolServer.PackageRef # reference to dependency
+                if par isa SymbolServer.VarRef # reference to dependency
                     return SymbolServer._lookup(par, getsymbolserver(state.server))
                 end
                 return par
@@ -126,7 +126,7 @@ function _get_field(par, arg, state)
     elseif par isa SymbolServer.ModuleStore # imported module
         if haskey(par.vals, CSTParser.str_value(arg))
             par = par.vals[CSTParser.str_value(arg)]
-            if par isa SymbolServer.PackageRef # reference to dependency
+            if par isa SymbolServer.VarRef # reference to dependency
                 return SymbolServer._lookup(par, getsymbolserver(state.server))
             end
             return par

@@ -36,7 +36,7 @@ function resolve_ref(x1::EXPR, m::SymbolServer.ModuleStore, state::State, visite
             return true
         elseif valof(x) in m.exported && haskey(m.vals, valof(x))
             val = m.vals[valof(x)]
-            if val isa SymbolServer.PackageRef
+            if val isa SymbolServer.VarRef
                 val1 = SymbolServer._lookup(val, getsymbolserver(state.server))
                 if val1 !== nothing
                     setref!(x, val1)
@@ -189,7 +189,7 @@ function resolve_getindex(x::EXPR, parent::SymbolServer.SymStore, state::State)
     if CSTParser.isidentifier(x)
         if parent isa SymbolServer.ModuleStore && haskey(parent.vals, valof(x))
             val = parent.vals[valof(x)]
-            if val isa SymbolServer.PackageRef
+            if val isa SymbolServer.VarRef
                 val = SymbolServer._lookup(val, getsymbolserver(state.server))
                 !(val isa SymbolServer.SymStore) && return false
             end
@@ -208,7 +208,7 @@ function resolve_getindex(x::EXPR, parent::SymbolServer.SymStore, state::State)
 end
 
 
-function resolve_typeref(tr::SymbolServer.TypeRef{N}, state::State) where N
+function resolve_typeref(tr::SymbolServer.FakeTypeName, state::State) where N
     if haskey(getsymbolserver(state.server), tr.mod.name[1])
         m = getsymbolserver(state.server)[tr.mod.name[1]]
     else

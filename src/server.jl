@@ -12,7 +12,7 @@ end
 mutable struct FileServer <: AbstractServer
     files::Dict{String,File}
     roots::Set{File}
-    symbolserver::Dict{String,SymbolServer.ModuleStore}
+    symbolserver::SymbolServer.EnvStore
 end
 
 # Interface spec.
@@ -38,7 +38,7 @@ getsymbolserver(server::FileServer) = server.symbolserver
 
 function scopepass(file, target = nothing)
     server = file.server
-    setscope!(getcst(file), Scope(nothing, getcst(file), Dict(), Dict{String,Any}("Base" => getsymbolserver(server)["Base"], "Core" => getsymbolserver(server)["Core"]), false))
+    setscope!(getcst(file), Scope(nothing, getcst(file), Dict(), Dict{String,Any}("Base" => getsymbolserver(server)[:Base], "Core" => getsymbolserver(server)[:Core]), false))
     state = State(file, target, [getpath(file)], scopeof(getcst(file)), false, EXPR[], server)
     state(getcst(file))
     for uref in state.urefs

@@ -112,7 +112,7 @@ end
 
 
 function _points_to_Base_macro(x::EXPR, name, state)
-    length(x.args) == 2 && isidentifier(x.args[2]) && valof(x.args[2]) == name && refof(x.args[2]) == getsymbolserver(state.server)["Base"].vals[string("@", name)]
+    length(x.args) == 2 && isidentifier(x.args[2]) && valof(x.args[2]) == name && refof(x.args[2]) == getsymbolserver(state.server)[:Base][Symbol("@", name)]
 end
 
 function _points_to_arbitrary_macro(x::EXPR, module_name, name, state)

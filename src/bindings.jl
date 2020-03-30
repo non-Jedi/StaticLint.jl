@@ -308,7 +308,7 @@ function add_binding(x, state, scope = state.scope)
                             if haskey(s1.modules, valof(parentof(parentof(bindingof(x).name))[1])) # this scope (s1) has a module with matching name
                                 # haskey(s1.modules[valof(parentof(parentof(bindingof(x).name))[1])].vals, name)
                                 mod = s1.modules[valof(parentof(parentof(bindingof(x).name))[1])]
-                                if mod isa SymbolServer.ModuleStore && haskey(mod.vals, name)
+                                if mod isa SymbolServer.ModuleStore && haskey(mod, name)
                                     bindingof(x).prev = mod.vals[name]
                                 end
                             end
