@@ -51,7 +51,7 @@ scopehasbinding(s::Scope, n::String) = haskey(s.names, n)
 Does this expression introduce a new scope?
 """
 function introduces_scope(x::EXPR, state)
-    #TODO: remove unused 2nd argument.
+    # TODO: remove unused 2nd argument.
     if typof(x) === CSTParser.BinaryOpCall
         if kindof(x[2]) === CSTParser.Tokens.EQ && CSTParser.is_func_call(x[1])
             return true
@@ -72,7 +72,7 @@ function introduces_scope(x::EXPR, state)
             typof(x) === CSTParser.For ||
             typof(x) === CSTParser.While ||
             typof(x) === CSTParser.Let ||
-            typof(x) === CSTParser.Generator || # and Flatten? 
+            typof(x) === CSTParser.Generator || # and Flatten?
             typof(x) === CSTParser.Try ||
             typof(x) === CSTParser.Do ||
             typof(x) === CSTParser.ModuleH ||

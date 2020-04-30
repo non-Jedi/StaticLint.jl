@@ -3,7 +3,7 @@ function resolve_import(x, state::State)
         u = typof(x) === Using
         i = 2
         n = length(x)
-        
+
         root = par = getsymbolserver(state.server)
         bindings = []
         while i <= n
@@ -42,7 +42,7 @@ function resolve_import(x, state::State)
             else
                 return
             end
-            if i == n 
+            if i == n
                 _mark_import_arg(x[i], par, state, u)
             end
             i += 1
@@ -71,7 +71,7 @@ function _mark_import_arg(arg, par, state, u)
             else
                 state.scope.modules = Dict(Symbol(valof(arg)) => par)
             end
-        elseif u && par isa Binding && par.val isa SymbolServer.ModuleStore 
+        elseif u && par isa Binding && par.val isa SymbolServer.ModuleStore
             if state.scope.modules isa Dict
                 state.scope.modules[Symbol(valof(arg))] = par.val
             else
@@ -109,10 +109,10 @@ function _get_field(par, arg, state)
         end
     elseif par isa Scope && scopehasbinding(par, arg_str_rep)
         return par.names[arg_str_rep]
-    elseif par isa Binding 
+    elseif par isa Binding
         if par.val isa Binding
             return _get_field(par.val, arg, state)
-        elseif par.val isa EXPR && CSTParser.defines_module(par.val) && scopeof(par.val) isa Scope 
+        elseif par.val isa EXPR && CSTParser.defines_module(par.val) && scopeof(par.val) isa Scope
             return _get_field(scopeof(par.val), arg, state)
         elseif par.val isa SymbolServer.ModuleStore
             return _get_field(par.val, arg, state)
